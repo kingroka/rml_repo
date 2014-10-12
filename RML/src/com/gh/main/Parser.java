@@ -120,35 +120,6 @@ public class Parser {
 						for (int i = 0; i < keywords.size(); i++) {
 							KeyWord temp = keywords.get(i);
 							if (line.contains(temp.getOpen())) {
-								/* Set Parents */
-
-								if (!temp.isSelfClosing()) {
-
-									if (parents.size() == 0) {
-										cmd = new Command(temp);
-										parent = temp;
-										cmd.setParent(parent);
-										log("Opened: " + temp.getCall());
-									} else if (parents.size() > 1) {
-										cmd = new Command(temp);
-										parent = parents
-												.get(parents.size() - 2);
-										cmd.setParent(parent);
-									}
-									
-								} else {
-									if (parents.size() == 0) {
-
-										log("Opened: " + temp.getCall());
-									} else if (parents.size() > 0) {
-										cmd = new Command(temp);
-										parent = parents
-												.get(parents.size() - 1);
-										cmd.setParent(temp);
-									}
-
-								}
-
 								/* Get Attributes */
 								for (int j = 0; j < temp.attributes.size(); j++) {
 									if (line.contains(temp.attributes.get(j)
@@ -192,29 +163,67 @@ public class Parser {
 
 									}
 								}
-
-								/* Command Settings */
 								SetCommands(temp, script);
+								/* Set Parents */
+
+								if (parents.size() > 0) {
+									parent = parents.get(parents.size() - 1);
+									if (parent.getCall().equals(temp.getCall())) {
+										if (parents.size() > 1) {
+											parent = parents
+													.get(parents.size() - 2);
+										} else {
+											parent = temp;
+										}
+									}
+								}
+
+								if (cmd != null) {
+									cmd.setParent(parent);
+								}
+								/* Command Settings */
+								if (cmd != null) {
+									if (!temp.getCall().equals("rml")
+											&& !temp.getCall().equals("func")) {
+
+										if (parent.getCall().equals("func")) {
+											openFunc.cmds.add(cmd);
+
+										} else if (parent.getCall()
+												.equals("if")) {
+											cond.get(cond.size() - 1).cmds
+													.add(cmd);
+										} else {	     
+												script.cmds.add(cmd);
+											
+										}
+
+									}
+								}
 							}
 
 							/* Closing Commands */
 							if (line.contains(temp.getClosed())) {
-
+							
 								cmd = new Command(parent);
+								
 								if (temp.getCall().equals("func")
 										&& openFunc != null) {
-									log(temp.getClosed());
+
 									script.functions.set(
 											script.functions.indexOf(openFunc),
 											openFunc);
 									openFunc = null;
 
 								}
-								if (!temp.isSelfClosing()) {
-									parents.remove(parent);
-									parent = null;
-
+								if(temp.getCall().equals("if")){
+									script.cmds.add(cond.get(cond.size() - 1));
 								}
+								if (temp.getCall().equals(parent.getCall())) {
+									parents.remove(parent);
+									parents.trimToSize();
+								}
+
 							}
 
 						}
@@ -252,7 +261,6 @@ public class Parser {
 		if (temp.getCall().equals("print")) {
 			cmd = new Print(script);
 			cmd.setKey(temp);
-			cmd.setParent(parent);
 			parents.add(temp);
 		}
 		if (temp.getCall().equals("int")) {
@@ -260,21 +268,17 @@ public class Parser {
 					.getValue(), Integer.parseInt((String) temp.getAttribute(
 					"value").getValue()));
 			cmd.setKey(temp);
-			cmd.setParent(parent);
 
 		}
 		if (temp.getCall().equals("string")) {
 			cmd = new StringCmd(script, (String) temp.getAttribute("name")
 					.getValue(), (String) temp.getAttribute("value").getValue());
 			cmd.setKey(temp);
-			cmd.setParent(parent);
 
 		}
 		if (temp.getCall().equals("@var")) {
 			cmd = new Var(script, (String) temp.getAttribute("name").getValue());
 			cmd.setKey(temp);
-			cmd.setParent(parent);
-
 		}
 		if (temp.getCall().equals("rml")) {
 			script.name = (String) temp.getAttribute("class").getValue();
@@ -282,39 +286,27 @@ public class Parser {
 		}
 		if (temp.getCall().equals("func")) {
 			cmd.setKey(temp);
-			cmd.setParent(parent);
+
 			openFunc = null;
 			openFunc = new Function(script, (String) temp.getAttribute("name")
 					.getValue());
 			script.functions.add(openFunc);
 			parents.add(temp);
 
-		}if (temp.getCall().equals("main")) {
+		}
+		if (temp.getCall().equals("main")) {
 			parents.add(temp);
 		}
 		if (temp.getCall().equals("@func")) {
 			cmd = new ExeFunc(script);
 			cmd.setKey(temp);
-			cmd.setParent(parent);
+
 		}
 		if (temp.getCall().equals("if")) {
 			cmd.setKey(temp);
-			cmd.setParent(parent);
 			cond.add(new If(script, (String) temp.getAttribute("cond")
 					.getValue()));
 			parents.add(temp);
-		}
-		if (!temp.getCall().equals("rml") && !temp.getCall().equals("func")) {
-			log(cmd.key.getCall() + "," + cmd.parent.getCall());
-			if (parent.getCall().equals("func")) {
-				openFunc.cmds.add(cmd);
-
-			} else if (parent.getCall().equals("if")) {
-				cond.get(cond.size() - 1).cmds.add(cmd);
-			} else {
-				script.cmds.add(cmd);
-			}
-
 		}
 
 	}
