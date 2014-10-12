@@ -10,15 +10,13 @@ Withtin this repository is the early workings of the java library that will pars
 ```
   <rml class="Main">
 	<main>
-	//Defining Variables
+		//Defining Variables
 		<int name="index" value="500"/int>
 		<string name="line" value="This is a test of strings"/string>
-		//Print Function
-
 		<@func name="test" /@func>
 	</main>
 	<func name="test">
-		<if cond="true">
+		<if cond=" 5 == 5">
 			<@var name="index" set="80"/@var>
 		</if>
 		<print>
