@@ -17,13 +17,11 @@ public class If extends Command{
 
 	public If(Script script, String cond) {
 		condition = cond;
-	
 	}
 	public void execute(){
 		 try {
 				Boolean bool = (Boolean) engine.eval(condition);
 				if(bool){
-					System.out.println(condition);
 					for (int i = 0; i < cmds.size(); i++) {
 						cmds.get(i).execute();
 					}
@@ -32,6 +30,9 @@ public class If extends Command{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	}
+	public void convertToJavaScript(){
+		
 	}
 
 }
