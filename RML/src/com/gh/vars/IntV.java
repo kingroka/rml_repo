@@ -1,8 +1,8 @@
 package com.gh.vars;
 
-public class Int extends Variable {
+public class IntV extends Variable {
 
-	public Int(String name,double val) {
+	public IntV(String name,double val) {
 		this.name = name;
 		value = val;
 
