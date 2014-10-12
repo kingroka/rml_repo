@@ -2,7 +2,7 @@ package com.gh.cmds;
 
 import com.gh.main.Command;
 import com.gh.main.Script;
-import com.gh.vars.IntV;
+import com.gh.vars.Int;
 
 public class IntCmd extends Command{
 	Script script;
@@ -16,7 +16,7 @@ public class IntCmd extends Command{
 		
 	}
 	public void execute(){
-		script.variables.add(new IntV(name,value));
+		script.variables.add(new Int(name,value));
 
 	}
 
