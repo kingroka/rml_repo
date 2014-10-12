@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.gh.cmds.Bool;
 import com.gh.cmds.ExeFunc;
 import com.gh.cmds.Function;
 import com.gh.cmds.If;
@@ -22,7 +23,7 @@ public class Parser {
 
 	public ArrayList<KeyWord> keywords = new ArrayList<KeyWord>();
 	private KeyWord rml, main, integer, list, ar, func, atfunc, condif, print,
-			var, string;
+			var, string, bool;
 
 	public Parser() {
 		rml = new KeyWord("rml");// rml tags
@@ -37,7 +38,12 @@ public class Parser {
 		integer.addAttribute("name");
 		integer.addAttribute("value");
 		keywords.add(integer);
-
+		
+		bool = new KeyWord("boolean", true);
+		bool.addAttribute("name");
+		bool.addAttribute("value");
+		keywords.add(bool);
+		
 		list = new KeyWord("list");// Array Declaration
 		list.addAttribute("name");
 		list.addAttribute("type");
@@ -266,6 +272,13 @@ public class Parser {
 		if (temp.getCall().equals("int")) {
 			cmd = new IntCmd(script, (String) temp.getAttribute("name")
 					.getValue(), Integer.parseInt((String) temp.getAttribute(
+					"value").getValue()));
+			cmd.setKey(temp);
+
+		}
+		if (temp.getCall().equals("boolean")) {
+			cmd = new Bool(script, (String) temp.getAttribute("name")
+					.getValue(), Boolean.parseBoolean((String) temp.getAttribute(
 					"value").getValue()));
 			cmd.setKey(temp);
 
