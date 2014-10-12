@@ -9,8 +9,8 @@ public class Print extends Command {
 		
 	}
 	public void execute(){
-		if (getContains() != null && parent!=null) {
-			System.out.println(getContains().trim());
+		if (getContains() != null ) {
+			System.out.println(parent.getContains().trim());
 		}
 	}
 }

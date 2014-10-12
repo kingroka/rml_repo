@@ -13,12 +13,13 @@ public class Var extends Command {
 
 	public Var(final Script script) {
 		this.script = script;
-		execute();
+	
 	}
 
 	public Var(Script script, String val) {
 		this.script = script;
 		this.val = val;
+		
 	}
 
 	ScriptEngineManager mgr = new ScriptEngineManager();
@@ -26,8 +27,7 @@ public class Var extends Command {
 
 	public void execute() {
 		if (parent.getCall().equals("print")) {
-			parent.setContains((String)script.getVariableByName(val).getValue().toString());
-			System.out.println("print: " +parent);
+			System.out.println((String)script.getVariableByName(val).getValue().toString());
 		} else {
 			if (script.getVariableByName(
 					(String) key.getAttribute("name").getValue()).getValue() instanceof Double) {
