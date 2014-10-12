@@ -1,0 +1,322 @@
+package com.gh.main;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import com.gh.cmds.ExeFunc;
+import com.gh.cmds.Function;
+import com.gh.cmds.If;
+import com.gh.cmds.IntCmd;
+import com.gh.cmds.Print;
+import com.gh.cmds.StringCmd;
+import com.gh.cmds.Var;
+
+public class Parser {
+	/*
+	 * Purpose/Goal: To create an "object oriented" scripting language with a
+	 * similar syntax to xml
+	 */
+
+	public ArrayList<KeyWord> keywords = new ArrayList<KeyWord>();
+	private KeyWord rml, main, integer, list, ar, func, atfunc, condif, print,
+			var, string;
+
+	public Parser() {
+		rml = new KeyWord("rml");// rml tags
+		rml.addAttribute(new Attribute("class"));
+		rml.addAttribute(new Attribute("test"));
+		keywords.add(rml);
+
+		main = new KeyWord("main");// Main Constuctor
+		keywords.add(main);
+
+		integer = new KeyWord("int", true);// Integer
+		integer.addAttribute("name");
+		integer.addAttribute("value");
+		keywords.add(integer);
+
+		list = new KeyWord("list");// Array Declaration
+		list.addAttribute("name");
+		list.addAttribute("type");
+		keywords.add(list);
+
+		ar = new KeyWord("ar", true);// Array items
+		ar.addAttribute("value");
+		keywords.add(ar);
+
+		func = new KeyWord("func");
+		func.addAttribute("name");
+		keywords.add(func);
+
+		atfunc = new KeyWord("@func");
+		atfunc.addAttribute("name");
+		keywords.add(atfunc);
+
+		condif = new KeyWord("if");
+		condif.addAttribute("cond");
+		keywords.add(condif);
+
+		print = new KeyWord("print");
+		keywords.add(print);
+
+		string = new KeyWord("string");
+		string.addAttribute("name");
+		string.addAttribute("value");
+		keywords.add(string);
+
+		var = new KeyWord("@var", true);
+		var.addAttribute("name");
+		var.addAttribute("set");
+		keywords.add(var);
+
+	}
+
+	public void addKeyWord(KeyWord temp) {
+		keywords.add(temp);
+	}
+
+	public void log(Object obj) {
+		System.out.println(this.getClass() + ": " + obj);
+
+	}
+
+	/**
+	 * @param path
+	 *            Path to folder containing all files
+	 */
+	public void loadFiles(String path) {
+
+	}
+
+	public static Parser parser;
+
+	public static void main(String[] args) {
+		parser = new Parser();
+		FileHandle.init();
+		FileHandle.run();
+	}
+
+	public ArrayList<KeyWord> parents = new ArrayList<KeyWord>();
+	public ArrayList<If> cond = new ArrayList<If>();
+	Command cmd = null;
+	KeyWord parent = null;
+	Function openFunc = null;
+
+	public void parse(Script script) {
+		BufferedReader reader;
+		try {
+
+			reader = new BufferedReader(new FileReader(script.path));
+			;// new BufferedReader(new
+				// FileReader("F://test.rml"));
+			String line = null;
+
+			while ((line = reader.readLine()) != null) {
+				if (!line.trim().startsWith("//")) {
+					if (hasKeyWord(line)) {
+						for (int i = 0; i < keywords.size(); i++) {
+							KeyWord temp = keywords.get(i);
+							if (line.contains(temp.getOpen())) {
+								/* Set Parents */
+
+								if (!temp.isSelfClosing()) {
+
+									if (parents.size() == 0) {
+										cmd = new Command(temp);
+										parent = temp;
+										cmd.setParent(parent);
+										log("Opened: " + temp.getCall());
+									} else if (parents.size() > 1) {
+										cmd = new Command(temp);
+										parent = parents
+												.get(parents.size() - 2);
+										cmd.setParent(parent);
+									}
+									
+								} else {
+									if (parents.size() == 0) {
+
+										log("Opened: " + temp.getCall());
+									} else if (parents.size() > 0) {
+										cmd = new Command(temp);
+										parent = parents
+												.get(parents.size() - 1);
+										cmd.setParent(temp);
+									}
+
+								}
+
+								/* Get Attributes */
+								for (int j = 0; j < temp.attributes.size(); j++) {
+									if (line.contains(temp.attributes.get(j)
+											.getName())) {
+										int tab = line.indexOf(temp.attributes
+												.get(j).getName());
+										if (line.contains(" =\" ".trim())) {
+											int start = line.indexOf(
+													" =\" ".trim(), tab);
+											int end = tab;
+											for (int l = start + 2; l < line
+													.length(); l++) {
+												if (line.substring(l, l + 1)
+														.equals("\"")) {
+													end = l;
+													break;
+												}
+											}
+											if (end != 0) {
+												String val = line.substring(
+														start + 2, end);
+												temp.attributes.get(j)
+														.setValue(val);
+
+											}
+
+											/*
+											 * log(temp.getCall() + "-> " +
+											 * temp.attributes.get(j) .getName()
+											 * + "-->" + temp.attributes.get(j)
+											 * .getValue());
+											 */
+
+										} else {
+											/*
+											 * log(temp.getCall() + ": " +
+											 * temp.attributes.get(j)
+											 * .getName());
+											 */
+										}
+
+									}
+								}
+
+								/* Command Settings */
+								SetCommands(temp, script);
+							}
+
+							/* Closing Commands */
+							if (line.contains(temp.getClosed())) {
+
+								cmd = new Command(parent);
+								if (temp.getCall().equals("func")
+										&& openFunc != null) {
+									log(temp.getClosed());
+									script.functions.set(
+											script.functions.indexOf(openFunc),
+											openFunc);
+									openFunc = null;
+
+								}
+								if (!temp.isSelfClosing()) {
+									parents.remove(parent);
+									parent = null;
+
+								}
+							}
+
+						}
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		parents.removeAll(parents);
+		parents = new ArrayList<KeyWord>();
+		cmd = null;
+
+		parent = null;
+
+	}
+
+	public boolean hasKeyWord(String line) {
+		boolean bool = false;
+		for (int i = 0; i < keywords.size(); i++) {
+			if (line.contains(keywords.get(i).getOpen())
+					|| line.contains(keywords.get(i).getClosed())) {
+				bool = true;
+				break;
+			}
+		}
+		return bool;
+	}
+
+	public void SetCommands(KeyWord temp, Script script) {
+		if (temp.getCall().equals("print")) {
+			cmd = new Print(script);
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+			parents.add(temp);
+		}
+		if (temp.getCall().equals("int")) {
+			cmd = new IntCmd(script, (String) temp.getAttribute("name")
+					.getValue(), Integer.parseInt((String) temp.getAttribute(
+					"value").getValue()));
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+
+		}
+		if (temp.getCall().equals("string")) {
+			cmd = new StringCmd(script, (String) temp.getAttribute("name")
+					.getValue(), (String) temp.getAttribute("value").getValue());
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+
+		}
+		if (temp.getCall().equals("@var")) {
+			cmd = new Var(script, (String) temp.getAttribute("name").getValue());
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+
+		}
+		if (temp.getCall().equals("rml")) {
+			script.name = (String) temp.getAttribute("class").getValue();
+			parents.add(temp);
+		}
+		if (temp.getCall().equals("func")) {
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+			openFunc = null;
+			openFunc = new Function(script, (String) temp.getAttribute("name")
+					.getValue());
+			script.functions.add(openFunc);
+			parents.add(temp);
+
+		}if (temp.getCall().equals("main")) {
+			parents.add(temp);
+		}
+		if (temp.getCall().equals("@func")) {
+			cmd = new ExeFunc(script);
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+		}
+		if (temp.getCall().equals("if")) {
+			cmd.setKey(temp);
+			cmd.setParent(parent);
+			cond.add(new If(script, (String) temp.getAttribute("cond")
+					.getValue()));
+			parents.add(temp);
+		}
+		if (!temp.getCall().equals("rml") && !temp.getCall().equals("func")) {
+			log(cmd.key.getCall() + "," + cmd.parent.getCall());
+			if (parent.getCall().equals("func")) {
+				openFunc.cmds.add(cmd);
+
+			} else if (parent.getCall().equals("if")) {
+				cond.get(cond.size() - 1).cmds.add(cmd);
+			} else {
+				script.cmds.add(cmd);
+			}
+
+		}
+
+	}
+
+}
