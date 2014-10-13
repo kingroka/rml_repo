@@ -15,7 +15,7 @@ import com.gh.cmds.Print;
 import com.gh.cmds.StringCmd;
 import com.gh.cmds.Var;
 
-public class Parser {
+public class Parser{
 	/*
 	 * Purpose/Goal: To create an "object oriented" scripting language with a
 	 * similar syntax to xml
@@ -100,12 +100,12 @@ public class Parser {
 	public void loadFiles(String path) {
 
 	}
-	/*
+	
 	public static void main(String[] args) {
 		FileHandle.init(new Parser(), "E:\\Projects");
 		FileHandle.run();
 	}
-*/
+
 	public ArrayList<KeyWord> parents = new ArrayList<KeyWord>();
 	public ArrayList<If> cond = new ArrayList<If>();
 	public Command cmd = null;
@@ -171,7 +171,7 @@ public class Parser {
 									}
 								}
 								/*Set Commands*/
-								this.SetCommands(temp, script);
+								this.setCommands(temp, script);
 								/* Set Parents */
 
 								if (parents.size() > 0) {
@@ -265,7 +265,7 @@ public class Parser {
 		return bool;
 	}
 
-	public void SetCommands(KeyWord temp, Script script) {
+	public void setCommands(KeyWord temp, Script script) {
 		if (temp.getCall().equals("print")) {
 			cmd = new Print(script);
 			cmd.setKey(temp);
