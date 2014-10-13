@@ -108,9 +108,9 @@ public class Parser {
 */
 	public ArrayList<KeyWord> parents = new ArrayList<KeyWord>();
 	public ArrayList<If> cond = new ArrayList<If>();
-	Command cmd = null;
-	KeyWord parent = null;
-	Function openFunc = null;
+	public Command cmd = null;
+	public KeyWord parent = null;
+	public Function openFunc = null;
 
 	public void parse(Script script) {
 		BufferedReader reader;
@@ -324,6 +324,30 @@ public class Parser {
 			parents.add(temp);
 		}
 
+	}
+
+	public Command getCmd() {
+		return cmd;
+	}
+
+	public void setCmd(Command cmd) {
+		this.cmd = cmd;
+	}
+
+	public KeyWord getParent() {
+		return parent;
+	}
+
+	public void setParent(KeyWord parent) {
+		this.parent = parent;
+	}
+
+	public Function getOpenFunc() {
+		return openFunc;
+	}
+
+	public void setOpenFunc(Function openFunc) {
+		this.openFunc = openFunc;
 	}
 
 }
