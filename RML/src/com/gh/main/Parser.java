@@ -26,6 +26,10 @@ public class Parser {
 			var, string, bool;
 
 	public Parser() {
+		
+	}
+	
+	public void defineKeyWords(){
 		rml = new KeyWord("rml");// rml tags
 		rml.addAttribute(new Attribute("class"));
 		rml.addAttribute(new Attribute("test"));
@@ -96,15 +100,12 @@ public class Parser {
 	public void loadFiles(String path) {
 
 	}
-
-	public static Parser parser;
-
+	/*
 	public static void main(String[] args) {
-		parser = new Parser();
-		FileHandle.init();
+		FileHandle.init(new Parser(), "E:\\Projects");
 		FileHandle.run();
 	}
-
+*/
 	public ArrayList<KeyWord> parents = new ArrayList<KeyWord>();
 	public ArrayList<If> cond = new ArrayList<If>();
 	Command cmd = null;
@@ -169,7 +170,8 @@ public class Parser {
 
 									}
 								}
-								SetCommands(temp, script);
+								/*Set Commands*/
+								this.SetCommands(temp, script);
 								/* Set Parents */
 
 								if (parents.size() > 0) {
@@ -187,7 +189,7 @@ public class Parser {
 								if (cmd != null) {
 									cmd.setParent(parent);
 								}
-								/* Command Settings */
+								/* Set Lists */
 								if (cmd != null) {
 									if (!temp.getCall().equals("rml")
 											&& !temp.getCall().equals("func")) {

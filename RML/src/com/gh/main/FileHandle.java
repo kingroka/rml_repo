@@ -13,13 +13,15 @@ public class FileHandle {
 
 	public static ArrayList<File> files = new ArrayList<File>();
 	public static String pathToFolder;
-
-	public static void init() {
-		findFiles("E:\\Projects");
+	public static Parser parser;
+	public static void init(Parser p, String path) {
+		parser = p;
+		parser.defineKeyWords();
+		findFiles(path);
 	}
 
 	private static boolean parsed;
-
+	
 	public static void findFiles(String path) {
 		if (!parsed) {
 			pathToFolder = path;
@@ -44,7 +46,7 @@ public class FileHandle {
 
 				scripts.add(new Script());
 				scripts.get(i).path = files.get(i).getAbsolutePath();
-				Parser.parser.parse(scripts.get(i));
+				parser.parse(scripts.get(i));
 			}
 			parsed=true;
 		}
