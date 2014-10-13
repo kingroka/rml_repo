@@ -4,7 +4,7 @@ by Kingroka
 ###About
 Really a Markup Language (or RML) is an XML based scripting language coded in Java. RML's syntax is designed to be an effective and customizable language while retaining the readability of XML. 
 
-Withtin this repository is the early workings of the java library that will parse and excecute RML code while also being flexible to custom RML syntax. 
+Within this repository is the early workings of the java library that will parse and execute RML code while also being flexible to custom RML syntax. 
 
 ###Example Code
 ```
