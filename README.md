@@ -8,20 +8,24 @@ Withtin this repository is the early workings of the java library that will pars
 
 ###Example Code
 ```
-  <rml class="Main">
+<rml class="Main">
 	<main>
-		//Defining Variables
 		<int name="index" value="500"/int>
 		<string name="line" value="This is a test of strings"/string>
+		<boolean name="bool" value="false"/boolean>
+		<print>
+			<@var name="bool"/@var>
+			<@var name="index"/@var>
+		</print>
 		<@func name="test" /@func>
 	</main>
 	<func name="test">
-		<if cond=" 5 == 5">
+		<if cond="index * index == index * index">
 			<@var name="index" set="80"/@var>
+			<print>
+				<@var name="index"/@var>
+			</print>
 		</if>
-		<print>
-			<@var name="index"/@var>
-		</print>
 	</func>
 	
 </rml>
