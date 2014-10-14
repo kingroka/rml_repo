@@ -7,6 +7,8 @@ public class KeyWord {
 	private boolean selfClosing;
 	public ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 	public String contains="";
+	ArrayList<Command> children = new ArrayList<Command>();
+
 	StringBuilder str = new StringBuilder();
 	/**
 	 * @param call
@@ -17,6 +19,14 @@ public class KeyWord {
 	public KeyWord(String call, boolean selfClosing) {
 		this.call = call;
 		this.selfClosing=selfClosing;
+	}
+	
+	public KeyWord(KeyWord word){
+		call = word.call;
+		selfClosing = word.isSelfClosing();
+		attributes=word.attributes;
+		contains = word.contains;
+		children = word.children;
 	}
 	public KeyWord(String call) {
 		this.call = call;
@@ -59,6 +69,7 @@ public class KeyWord {
 	public Attribute getAttribute(String name){
 		Attribute a=null;
 		for(int i=0;i<attributes.size();i++){
+			//System.out.println(attributes.get(i).getName()+"-->"+attributes.get(i).getValue());
 			if(attributes.get(i).getName().trim().equals(name.trim())){
 				a=attributes.get(i);
 			}
@@ -78,6 +89,12 @@ public class KeyWord {
 	public void setContains(String contains) {
 		str.append(contains+" ");
 		this.contains = str.toString();
+	}
+	public void clearAttributes() {
+		for(int i=0;i<attributes.size();i++){
+			attributes.get(i).setValue(null);
+		}
+		
 	}
 	
 	

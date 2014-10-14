@@ -15,7 +15,9 @@ public class ExeFunc extends Command {
 		try{
 		script.getFunction(
 				(String)key.getAttribute("name")
-				.getValue()).execute();
+				.getValue()
+				.toString()
+				).execute();
 		}catch(NullPointerException e){
 			e.printStackTrace();
 		}

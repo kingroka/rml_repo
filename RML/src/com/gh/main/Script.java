@@ -51,13 +51,18 @@ public class Script {
 
 	public Variable getVariableByName(String name) {
 		Variable v = null;
+
 		for (int i = 0; i < variables.size(); i++) {
-			if (variables.get(i).getName().trim().equals(name.trim())) {
+			if (variables.get(i)
+					.getName().trim()
+					.equals(name.trim())) {
 				v = variables.get(i);
-				break;
+				return v;
 			}
 		}
+		
 		return v;
+		
 	}
 
 	public String getName() {

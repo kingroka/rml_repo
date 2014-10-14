@@ -1,20 +1,24 @@
 package com.gh.main;
 
+import java.util.ArrayList;
+
 public class Command {
 	public KeyWord key, parent;
 	StringBuilder str = new StringBuilder();
+	public ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 
 	public Command(KeyWord key, KeyWord parent) {
 		this.key = key;
 		this.parent = parent;
 	}
 
-	public Command(KeyWord key)  {
+	public Command(KeyWord key) {
 		this.key = key;
+
 	}
 
 	public Command() {
-		
+
 	}
 
 
@@ -28,6 +32,7 @@ public class Command {
 
 	public void setKey(KeyWord key) {
 		this.key = key;
+		
 	}
 
 	public KeyWord getParent() {
@@ -50,8 +55,5 @@ public class Command {
 		str.append(contains);
 		this.key.setContains(str.toString().trim());
 	}
-
-
-
 
 }

@@ -32,7 +32,6 @@ public class Parser{
 	public void defineKeyWords(){
 		rml = new KeyWord("rml");// rml tags
 		rml.addAttribute(new Attribute("class"));
-		rml.addAttribute(new Attribute("test"));
 		keywords.add(rml);
 
 		main = new KeyWord("main");// Main Constuctor
@@ -102,7 +101,7 @@ public class Parser{
 	}
 	
 	public static void main(String[] args) {
-		FileHandle.init(new Parser(), "E:\\Projects");
+		FileHandle.init(new Parser(), "C:\\Users\\Justin\\Documents\\Projects");
 		FileHandle.run();
 	}
 
@@ -125,8 +124,10 @@ public class Parser{
 				if (!line.trim().startsWith("//")) {
 					if (hasKeyWord(line)) {
 						for (int i = 0; i < keywords.size(); i++) {
-							KeyWord temp = keywords.get(i);
+							KeyWord temp = new KeyWord(keywords.get(i));
+							
 							if (line.contains(temp.getOpen())) {
+								
 								/* Get Attributes */
 								for (int j = 0; j < temp.attributes.size(); j++) {
 									if (line.contains(temp.attributes.get(j)
@@ -152,20 +153,8 @@ public class Parser{
 														.setValue(val);
 
 											}
-
-											/*
-											 * log(temp.getCall() + "-> " +
-											 * temp.attributes.get(j) .getName()
-											 * + "-->" + temp.attributes.get(j)
-											 * .getValue());
-											 */
-
 										} else {
-											/*
-											 * log(temp.getCall() + ": " +
-											 * temp.attributes.get(j)
-											 * .getName());
-											 */
+											 
 										}
 
 									}
@@ -202,6 +191,7 @@ public class Parser{
 											cond.get(cond.size() - 1).cmds
 													.add(cmd);
 										} else {	     
+											
 												script.cmds.add(cmd);
 											
 										}
@@ -212,7 +202,7 @@ public class Parser{
 
 							/* Closing Commands */
 							if (line.contains(temp.getClosed())) {
-							
+								
 								cmd = new Command(parent);
 								
 								if (temp.getCall().equals("func")
@@ -231,7 +221,7 @@ public class Parser{
 									parents.remove(parent);
 									parents.trimToSize();
 								}
-
+								
 							}
 
 						}
@@ -266,6 +256,9 @@ public class Parser{
 	}
 
 	public void setCommands(KeyWord temp, Script script) {
+
+		
+	
 		if (temp.getCall().equals("print")) {
 			cmd = new Print(script);
 			cmd.setKey(temp);
@@ -292,7 +285,7 @@ public class Parser{
 
 		}
 		if (temp.getCall().equals("@var")) {
-			cmd = new Var(script, (String) temp.getAttribute("name").getValue());
+			cmd = new Var(script, (String) temp.getAttribute("name").getValue(),(String) temp.getAttribute("set").getValue());
 			cmd.setKey(temp);
 		}
 		if (temp.getCall().equals("rml")) {
@@ -323,6 +316,8 @@ public class Parser{
 					.getValue()));
 			parents.add(temp);
 		}
+		if(cmd!=null)
+		cmd.setKey(temp);
 
 	}
 
