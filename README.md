@@ -9,19 +9,18 @@ Within this repository is the early workings of the java library that will parse
 ##Example Code
 ```
 <rml class="Main">
-	<main>
+	//$main function is the only function that is run
+	<func name="$main">
 		<int name="index" value="500"/int>
-		<string name="line" value="This is a test of strings"/string>
+		<string name="line" value="Condition is true"/string>		
 		<boolean name="bool" value="false"/boolean>
-		<print>
-			<@var name="bool"/@var>
-			<@var name="index"/@var>
-		</print>
+		<@var name="index" set="15" /@var>
+		<@var name="bool" set="true" /@var>	
 		<@func name="test" /@func>
-	</main>
-	<func name="test">
-		<if cond="index * index == index * index">
-			<@var name="index" set="80"/@var>
+	</func>
+	
+	<func name="test">	
+		<if cond="12 >= 12">
 			<print>
 				<@var name="index"/@var>
 			</print>
