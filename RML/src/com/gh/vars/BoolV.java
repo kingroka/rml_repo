@@ -19,6 +19,7 @@ public class BoolV extends Variable {
 			this.value = value;
 		} else if (value instanceof String) {
 			try {
+//System.out.println(value);
 				this.value = Boolean.parseBoolean((String) value);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();

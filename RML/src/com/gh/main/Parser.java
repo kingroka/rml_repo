@@ -11,25 +11,26 @@ import com.gh.cmds.ExeFunc;
 import com.gh.cmds.Function;
 import com.gh.cmds.If;
 import com.gh.cmds.IntCmd;
+import com.gh.cmds.ListCMD;
 import com.gh.cmds.Print;
 import com.gh.cmds.StringCmd;
 import com.gh.cmds.Var;
 
-public class Parser{
+public class Parser {
 	/*
 	 * Purpose/Goal: To create an "object oriented" scripting language with a
 	 * similar syntax to xml
 	 */
 
 	public ArrayList<KeyWord> keywords = new ArrayList<KeyWord>();
-	private KeyWord rml, main, integer, list, ar, func, atfunc, condif, print,
+	private KeyWord rml, main, dbl, list, ar, func, atfunc, condif, print,
 			var, string, bool;
 
 	public Parser() {
-		
+
 	}
-	
-	public void defineKeyWords(){
+
+	public void defineKeyWords() {
 		rml = new KeyWord("rml");// rml tags
 		rml.addAttribute(new Attribute("class"));
 		keywords.add(rml);
@@ -37,16 +38,16 @@ public class Parser{
 		main = new KeyWord("main");// Main Constuctor
 		keywords.add(main);
 
-		integer = new KeyWord("int", true);// Integer
-		integer.addAttribute("name");
-		integer.addAttribute("value");
-		keywords.add(integer);
-		
+		dbl = new KeyWord("double", true);// Double
+		dbl.addAttribute("name");
+		dbl.addAttribute("value");
+		keywords.add(dbl);
+
 		bool = new KeyWord("boolean", true);
 		bool.addAttribute("name");
 		bool.addAttribute("value");
 		keywords.add(bool);
-		
+
 		list = new KeyWord("list");// Array Declaration
 		list.addAttribute("name");
 		list.addAttribute("type");
@@ -99,17 +100,15 @@ public class Parser{
 	public void loadFiles(String path) {
 
 	}
-	
+
 	public static void main(String[] args) {
 		FileHandle.init(new Parser(), "C:\\Users\\Justin\\Documents\\Projects");
 		FileHandle.run();
 	}
 
-	public ArrayList<KeyWord> parents = new ArrayList<KeyWord>();
-	public ArrayList<If> cond = new ArrayList<If>();
+	public ArrayList<Command> parents = new ArrayList<Command>();
 	public Command cmd = null;
-	public KeyWord parent = null;
-	public Function openFunc = null;
+	public Command parent = null;
 
 	public void parse(Script script) {
 		BufferedReader reader;
@@ -125,9 +124,9 @@ public class Parser{
 					if (hasKeyWord(line)) {
 						for (int i = 0; i < keywords.size(); i++) {
 							KeyWord temp = new KeyWord(keywords.get(i));
-							
+
 							if (line.contains(temp.getOpen())) {
-								
+
 								/* Get Attributes */
 								for (int j = 0; j < temp.attributes.size(); j++) {
 									if (line.contains(temp.attributes.get(j)
@@ -154,74 +153,52 @@ public class Parser{
 
 											}
 										} else {
-											 
+
 										}
 
 									}
 								}
-								/*Set Commands*/
+								/* Set Commands */
 								this.setCommands(temp, script);
 								/* Set Parents */
 
 								if (parents.size() > 0) {
 									parent = parents.get(parents.size() - 1);
-									if (parent.getCall().equals(temp.getCall())) {
-										if (parents.size() > 1) {
-											parent = parents
-													.get(parents.size() - 2);
-										} else {
-											parent = temp;
+									if (parent != null) {
+										if (parent.getCall().equals(
+												temp.getCall())) {
+											if (parents.size() > 1) {
+												parent = parents.get(parents
+														.size() - 2);
+
+											} else {
+												parent = null;
+											}
 										}
 									}
 								}
 
-								if (cmd != null) {
-									cmd.setParent(parent);
-								}
 								/* Set Lists */
-								if (cmd != null) {
-									if (!temp.getCall().equals("rml")
-											&& !temp.getCall().equals("func")) {
-
-										if (parent.getCall().equals("func")) {
-											openFunc.cmds.add(cmd);
-
-										} else if (parent.getCall()
-												.equals("if")) {
-											cond.get(cond.size() - 1).cmds
-													.add(cmd);
-										} else {	     
-											
-												script.cmds.add(cmd);
-											
-										}
+								if (cmd != null && parent != null) {
+									if (!temp.getCall().equals("rml")) {
+										parent.children.add(cmd);
 
 									}
 								}
 							}
-
+							if (cmd != null && parent != null) {
+								cmd.setParent(parent.getKey());
+							}
 							/* Closing Commands */
 							if (line.contains(temp.getClosed())) {
-								
-								cmd = new Command(parent);
-								
-								if (temp.getCall().equals("func")
-										&& openFunc != null) {
+								if (parent != null) {
+									if (temp.getCall().equals(parent.getCall())) {
+										parents.remove(parent);
+										parents.trimToSize();
 
-									script.functions.set(
-											script.functions.indexOf(openFunc),
-											openFunc);
-									openFunc = null;
+									}
+								}
 
-								}
-								if(temp.getCall().equals("if")){
-									script.cmds.add(cond.get(cond.size() - 1));
-								}
-								if (temp.getCall().equals(parent.getCall())) {
-									parents.remove(parent);
-									parents.trimToSize();
-								}
-								
 							}
 
 						}
@@ -236,7 +213,7 @@ public class Parser{
 			e.printStackTrace();
 		}
 		parents.removeAll(parents);
-		parents = new ArrayList<KeyWord>();
+		parents = new ArrayList<Command>();
 		cmd = null;
 
 		parent = null;
@@ -257,12 +234,10 @@ public class Parser{
 
 	public void setCommands(KeyWord temp, Script script) {
 
-		
-	
 		if (temp.getCall().equals("print")) {
 			cmd = new Print(script);
 			cmd.setKey(temp);
-			parents.add(temp);
+			parents.add(cmd);
 		}
 		if (temp.getCall().equals("int")) {
 			cmd = new IntCmd(script, (String) temp.getAttribute("name")
@@ -273,8 +248,8 @@ public class Parser{
 		}
 		if (temp.getCall().equals("boolean")) {
 			cmd = new Bool(script, (String) temp.getAttribute("name")
-					.getValue(), Boolean.parseBoolean((String) temp.getAttribute(
-					"value").getValue()));
+					.getValue(), Boolean.parseBoolean((String) temp
+					.getAttribute("value").getValue()));
 			cmd.setKey(temp);
 
 		}
@@ -285,39 +260,43 @@ public class Parser{
 
 		}
 		if (temp.getCall().equals("@var")) {
-			cmd = new Var(script, (String) temp.getAttribute("name").getValue(),(String) temp.getAttribute("set").getValue());
+			cmd = new Var(script,
+					(String) temp.getAttribute("name").getValue(),
+					(String) temp.getAttribute("set").getValue());
 			cmd.setKey(temp);
 		}
 		if (temp.getCall().equals("rml")) {
 			script.name = (String) temp.getAttribute("class").getValue();
-			parents.add(temp);
+			parents.add(cmd);
 		}
 		if (temp.getCall().equals("func")) {
+			cmd = new Function(script, (String) temp.getAttribute("name")
+					.getValue());
 			cmd.setKey(temp);
 
-			openFunc = null;
-			openFunc = new Function(script, (String) temp.getAttribute("name")
-					.getValue());
-			script.functions.add(openFunc);
-			parents.add(temp);
+			script.functions.add((Function) cmd);
+			parents.add(cmd);
 
-		}
-		if (temp.getCall().equals("main")) {
-			parents.add(temp);
 		}
 		if (temp.getCall().equals("@func")) {
 			cmd = new ExeFunc(script);
 			cmd.setKey(temp);
+		}
 
+		if (temp.getCall().equals("list")) {
+			cmd = new ListCMD(script, temp.getAttribute("name").getValue()
+					.toString(), temp.getAttribute("type").getValue()
+					.toString());
+			cmd.setKey(temp);
+			parents.add(cmd);
 		}
 		if (temp.getCall().equals("if")) {
 			cmd.setKey(temp);
-			cond.add(new If(script, (String) temp.getAttribute("cond")
-					.getValue()));
-			parents.add(temp);
+			cmd = new If(script, (String) temp.getAttribute("cond").getValue());
+			parents.add(cmd);
 		}
-		if(cmd!=null)
-		cmd.setKey(temp);
+		if (cmd != null)
+			cmd.setKey(temp);
 
 	}
 
@@ -329,20 +308,12 @@ public class Parser{
 		this.cmd = cmd;
 	}
 
-	public KeyWord getParent() {
+	public Command getParent() {
 		return parent;
 	}
 
-	public void setParent(KeyWord parent) {
+	public void setParent(Command parent) {
 		this.parent = parent;
-	}
-
-	public Function getOpenFunc() {
-		return openFunc;
-	}
-
-	public void setOpenFunc(Function openFunc) {
-		this.openFunc = openFunc;
 	}
 
 }

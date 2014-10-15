@@ -6,6 +6,7 @@ import javax.script.ScriptException;
 
 import com.gh.main.Command;
 import com.gh.main.Script;
+import com.gh.vars.Int;
 
 public class Var extends Command {
 	Script script;
@@ -23,8 +24,9 @@ public class Var extends Command {
 	ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
 	public void execute() {
+		super.execute();
 		//System.out.println("executing: " + this);
-		if (parent.getCall().equals("print") ) {
+		if (getParent().getCall().equals("print") ) {
 			System.out.println((String) script.getVariableByName(this.name)
 					.getValue().toString());
 		} else {
@@ -32,11 +34,11 @@ public class Var extends Command {
 			String value = val;
 		//	System.out.println(name + ": " + value + ": " + this);
 
-			if (script.getVariableByName(name).getValue() instanceof Double) {
+			if (script.getVariableByName(name) instanceof Int) {
 				// set value to Double (Int)
 				try {
 					script.getVariableByName(name).setValue(
-							Double.toString((double) engine.eval(value)));
+							Double.toString((double) engine.eval(val)));
 				} catch (ScriptException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

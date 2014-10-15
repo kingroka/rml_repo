@@ -16,6 +16,7 @@ public class IntCmd extends Command{
 		
 	}
 	public void execute(){
+		super.execute();
 		script.variables.add(new Int(name,value));
 
 	}

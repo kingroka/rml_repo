@@ -7,7 +7,6 @@ public class KeyWord {
 	private boolean selfClosing;
 	public ArrayList<Attribute> attributes = new ArrayList<Attribute>();
 	public String contains="";
-	ArrayList<Command> children = new ArrayList<Command>();
 
 	StringBuilder str = new StringBuilder();
 	/**
@@ -26,7 +25,7 @@ public class KeyWord {
 		selfClosing = word.isSelfClosing();
 		attributes=word.attributes;
 		contains = word.contains;
-		children = word.children;
+		
 	}
 	public KeyWord(String call) {
 		this.call = call;

@@ -22,12 +22,15 @@ public class If extends Command {
 	}
 
 	public void execute() {
+
 		convertToJavaScript();
 		try {
 			Boolean bool = (Boolean) engine.eval(condition);
 			if (bool) {
+				super.execute();
 				for (int i = 0; i < cmds.size(); i++) {
 					cmds.get(i).execute();
+					
 				}
 			}
 		} catch (ScriptException e) {

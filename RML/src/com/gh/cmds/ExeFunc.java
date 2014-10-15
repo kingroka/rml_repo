@@ -6,20 +6,26 @@ import com.gh.main.Script;
 public class ExeFunc extends Command {
 	Script script;
 
-	public ExeFunc( Script script) {
+	public ExeFunc(Script script) {
 		this.script = script;
-	
+
 	}
 
-	public void execute(){
-		try{
-		script.getFunction(
-				(String)key.getAttribute("name")
-				.getValue()
-				.toString()
-				).execute();
-		}catch(NullPointerException e){
-			e.printStackTrace();
-		}
+	boolean ran;
+
+	public void execute() {
+			Function exe = script.getFunction((String) getAttribute("name")
+					.getValue()
+					.toString());
+
+			try {
+				exe.execute();
+				
+
+			} catch (NullPointerException e) {
+				e.printStackTrace();
+			}
+		
 	}
+
 }

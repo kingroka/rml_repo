@@ -12,16 +12,17 @@ public class Function extends Command {
 
 	public Function(Script script, String name) {
 		this.script = script;
-	
 		this.name = name;
 		
 	}
-
-	public void execute() {
-		for (int i = 0; i < cmds.size(); i++) {
-			cmds.get(i).execute();
-		}
+	boolean ranChild;
+	public void execute(){
+		super.execute();
 
 	}
+	
+	
+	
+
 
 }

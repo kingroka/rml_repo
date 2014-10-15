@@ -17,6 +17,7 @@ public class Bool extends Command {
 		
 	}
 	public void execute(){
+		super.execute();
 		script.variables.add(new BoolV(name,value));
 
 	}

@@ -16,6 +16,7 @@ public class StringCmd extends Command{
 	
 	}
 	public void execute(){
+		super.execute();
 		script.variables.add(new StringV(name,value));
 	}
 
