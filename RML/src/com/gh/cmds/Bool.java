@@ -3,7 +3,6 @@ package com.gh.cmds;
 import com.gh.main.Command;
 import com.gh.main.Script;
 import com.gh.vars.BoolV;
-import com.gh.vars.Int;
 
 public class Bool extends Command {
 	Script script;

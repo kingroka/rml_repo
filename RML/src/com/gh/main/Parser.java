@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.gh.cmds.Bool;
+import com.gh.cmds.DoubleCmd;
 import com.gh.cmds.ExeFunc;
 import com.gh.cmds.Function;
 import com.gh.cmds.If;
-import com.gh.cmds.IntCmd;
 import com.gh.cmds.ListCMD;
 import com.gh.cmds.Print;
 import com.gh.cmds.StringCmd;
@@ -240,7 +240,7 @@ public class Parser {
 			parents.add(cmd);
 		}
 		if (temp.getCall().equals("int")) {
-			cmd = new IntCmd(script, (String) temp.getAttribute("name")
+			cmd = new DoubleCmd(script, (String) temp.getAttribute("name")
 					.getValue(), Integer.parseInt((String) temp.getAttribute(
 					"value").getValue()));
 			cmd.setKey(temp);
