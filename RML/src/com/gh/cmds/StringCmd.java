@@ -13,11 +13,12 @@ public class StringCmd extends Command{
 		this.script = script;
 		this.name = name;
 		this.value = value;
-	
+
 	}
 	public void execute(){
 		super.execute();
 		script.variables.add(new StringV(name,value));
+
 	}
 
 }

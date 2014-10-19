@@ -12,7 +12,7 @@ public class Print extends Command {
 		super.execute();
 		if (getContains() != null ) {
 			
-			System.out.println(getParent().getContains().trim());
+			//System.out.println(getParent().getContains().trim());
 		}
 	}
 }

@@ -14,7 +14,7 @@ public class ListCMD extends Command {
 	}
 	public void execute(){
 		script.variables.add(new ListV(name,type));
-		System.out.println(name +": " + type);
+		//System.out.println(name +": " + type);
 	}
 
 }

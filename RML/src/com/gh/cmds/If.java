@@ -22,7 +22,6 @@ public class If extends Command {
 	}
 
 	public void execute() {
-
 		convertToJavaScript();
 		try {
 			Boolean bool = (Boolean) engine.eval(condition);

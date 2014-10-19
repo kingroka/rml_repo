@@ -12,7 +12,6 @@ public class DoubleCmd extends Command{
 		this.script = script;
 		this.name = name;
 		this.value = value;
-	
 		
 	}
 	public void execute(){

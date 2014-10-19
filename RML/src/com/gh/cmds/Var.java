@@ -12,11 +12,10 @@ public class Var extends Command {
 	Script script;
 	public String name, val;
 
-
 	public Var(Script script, String name, String val) {
 		this.script = script;
 		this.val = val;
-		this.name=name;
+		this.name = name;
 
 	}
 
@@ -24,15 +23,14 @@ public class Var extends Command {
 	ScriptEngine engine = mgr.getEngineByName("JavaScript");
 
 	public void execute() {
-		super.execute();
-		//System.out.println("executing: " + this);
-		if (getParent().getCall().equals("print") ) {
+		// System.out.println("executing: " + this);
+		if (getParent().getCall().equals("print")) {
 			System.out.println((String) script.getVariableByName(this.name)
-					.getValue().toString());
+					.getValue());
 		} else {
 			String name = this.name;
 			String value = val;
-		//	System.out.println(name + ": " + value + ": " + this);
+			// System.out.println(name + ": " + value + ": " + this);
 
 			if (script.getVariableByName(name) instanceof DoubleV) {
 				// set value to Double (Int)

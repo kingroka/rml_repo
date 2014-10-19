@@ -14,10 +14,10 @@ public class ExeFunc extends Command {
 	boolean ran;
 
 	public void execute() {
+		super.execute();
 			Function exe = script.getFunction((String) getAttribute("name")
 					.getValue()
 					.toString());
-
 			try {
 				exe.execute();
 				
