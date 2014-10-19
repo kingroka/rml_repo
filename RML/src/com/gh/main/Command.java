@@ -26,9 +26,8 @@ public class Command {
 	}
 
 	public void execute() {
-		if (!key.isSelfClosing()) {
-			runChildren();
-		}
+		runChildren();
+		
 	}
 
 	public void runChildren() {

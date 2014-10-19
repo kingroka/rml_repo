@@ -12,7 +12,6 @@ public class Script {
 	String name;
 	public boolean compiled;
 
-
 	public ArrayList<Variable> getVariables() {
 		return variables;
 	}
@@ -34,27 +33,28 @@ public class Script {
 	}
 
 	public void execute() {
-		System.out.println(name + ":" + functions.size());
-	for(int i=0;i<functions.size();i++){
-		if(functions.get(i).name.trim().startsWith("$")){
-			functions.get(i).execute();;
+		System.out.println("   > Start --> " + name);
+		for (int i = 0; i < functions.size(); i++) {
+			if (functions.get(i).name.trim().startsWith("$")) {
+				functions.get(i).execute();
+				
+			}
 		}
-	}
+		System.out.println("   > End --> " + name);
+
 	}
 
 	public Variable getVariableByName(String name) {
 		Variable v = null;
 		for (int i = 0; i < variables.size(); i++) {
-			if (variables.get(i)
-					.getName().trim()
-					.equals(name.trim())) {
+			if (variables.get(i).getName().trim().equals(name.trim())) {
 				v = variables.get(i);
 				break;
 			}
 		}
 
 		return v;
-		
+
 	}
 
 	public String getName() {

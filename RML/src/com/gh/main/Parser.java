@@ -23,8 +23,8 @@ public class Parser {
 	 */
 
 	public ArrayList<KeyWord> keywords = new ArrayList<KeyWord>();
-	private KeyWord rml, main, dbl, list, ar, func, atfunc, condif, print,
-			var, string, bool;
+	private KeyWord rml, dbl, list, ar, func, atfunc, condif, print, var,
+			string, bool;
 
 	public Parser() {
 
@@ -34,9 +34,6 @@ public class Parser {
 		rml = new KeyWord("rml");// rml tags
 		rml.addAttribute(new Attribute("class"));
 		keywords.add(rml);
-
-		main = new KeyWord("main");// Main Constuctor
-		keywords.add(main);
 
 		dbl = new KeyWord("double", true);// Double
 		dbl.addAttribute("name");
@@ -48,20 +45,21 @@ public class Parser {
 		bool.addAttribute("value");
 		keywords.add(bool);
 
-		list = new KeyWord("list");// Array Declaration
+		list = new KeyWord("list", true);// Array Declaration
 		list.addAttribute("name");
 		list.addAttribute("type");
 		keywords.add(list);
 
 		ar = new KeyWord("ar", true);// Array items
 		ar.addAttribute("value");
+		ar.addAttribute("list");
 		keywords.add(ar);
 
 		func = new KeyWord("func");
 		func.addAttribute("name");
 		keywords.add(func);
 
-		atfunc = new KeyWord("@func");
+		atfunc = new KeyWord("@func", true);
 		atfunc.addAttribute("name");
 		keywords.add(atfunc);
 
@@ -72,7 +70,7 @@ public class Parser {
 		print = new KeyWord("print");
 		keywords.add(print);
 
-		string = new KeyWord("string");
+		string = new KeyWord("string", true);
 		string.addAttribute("name");
 		string.addAttribute("value");
 		keywords.add(string);
@@ -158,45 +156,47 @@ public class Parser {
 
 									}
 								}
+								if (temp.getCall().equals("rml")) {
+									script.name = (String) temp.getAttribute(
+											"class").getValue();
+									continue;
+								}
 								/* Set Commands */
 								this.setCommands(temp, script);
-								/* Set Parents */
-
-								if (parents.size() > 0) {
-									parent = parents.get(parents.size() - 1);
-									if (parent != null) {
-										if (parent.getCall().equals(
-												temp.getCall())) {
-											if (parents.size() > 1) {
-												parent = parents.get(parents
-														.size() - 2);
-
-											} else {
-												parent = null;
-											}
-										}
-									}
-								}
-
+								cmd.setKey(temp);
 								/* Set Lists */
 								if (cmd != null && parent != null) {
-									if (!temp.getCall().equals("rml")) {
-										parent.children.add(cmd);
+									parent.children.add(cmd);
+									cmd.setParent(parent.getKey());
 
-									}
 								}
+								/* Set Parents */
+
+								if (!cmd.getKey().isSelfClosing()
+										&& !cmd.getKey().getCall()
+												.equals("rml")) {
+									parent = cmd;
+									parents.add(parent);
+									;
+
+								}
+
 							}
-							if (cmd != null && parent != null) {
-								cmd.setParent(parent.getKey());
-							}
+
 							/* Closing Commands */
 							if (line.contains(temp.getClosed())) {
+								if (temp.getCall().equals("rml")) {
+									continue;
+								}
 								if (parent != null) {
-									if (temp.getCall().equals(parent.getCall())) {
-										parents.remove(parent);
-										parents.trimToSize();
-
+									parents.remove(parent);
+									if (parents.size() > 0) {
+										parent = parents
+												.get(parents.size() - 1);
+									} else {
+										parent = null;
 									}
+
 								}
 
 							}
@@ -236,67 +236,48 @@ public class Parser {
 
 		if (temp.getCall().equals("print")) {
 			cmd = new Print(script);
-			cmd.setKey(temp);
-			parents.add(cmd);
 		}
-		if (temp.getCall().equals("int")) {
+		if (temp.getCall().equals("double")) {
 			cmd = new DoubleCmd(script, (String) temp.getAttribute("name")
 					.getValue(), Integer.parseInt((String) temp.getAttribute(
 					"value").getValue()));
-			cmd.setKey(temp);
 
 		}
 		if (temp.getCall().equals("boolean")) {
 			cmd = new Bool(script, (String) temp.getAttribute("name")
 					.getValue(), Boolean.parseBoolean((String) temp
 					.getAttribute("value").getValue()));
-			cmd.setKey(temp);
 
 		}
 		if (temp.getCall().equals("string")) {
 			cmd = new StringCmd(script, (String) temp.getAttribute("name")
 					.getValue(), (String) temp.getAttribute("value").getValue());
-			cmd.setKey(temp);
 
 		}
 		if (temp.getCall().equals("@var")) {
 			cmd = new Var(script,
 					(String) temp.getAttribute("name").getValue(),
 					(String) temp.getAttribute("set").getValue());
-			cmd.setKey(temp);
 		}
-		if (temp.getCall().equals("rml")) {
-			script.name = (String) temp.getAttribute("class").getValue();
-			parents.add(cmd);
-		}
+
 		if (temp.getCall().equals("func")) {
 			cmd = new Function(script, (String) temp.getAttribute("name")
 					.getValue());
-			cmd.setKey(temp);
-
 			script.functions.add((Function) cmd);
-			parents.add(cmd);
 
 		}
 		if (temp.getCall().equals("@func")) {
 			cmd = new ExeFunc(script);
-			cmd.setKey(temp);
 		}
 
 		if (temp.getCall().equals("list")) {
 			cmd = new ListCMD(script, temp.getAttribute("name").getValue()
 					.toString(), temp.getAttribute("type").getValue()
 					.toString());
-			cmd.setKey(temp);
-			parents.add(cmd);
 		}
 		if (temp.getCall().equals("if")) {
-			cmd.setKey(temp);
 			cmd = new If(script, (String) temp.getAttribute("cond").getValue());
-			parents.add(cmd);
 		}
-		if (cmd != null)
-			cmd.setKey(temp);
 
 	}
 

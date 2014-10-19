@@ -36,7 +36,7 @@ public class FileHandle {
 					f = root.listFiles()[j];
 					if (f.isFile() && f.getName().endsWith(".rml")) {
 						files.add(f);
-						System.out.println(f.getName());
+						System.out.println("found-> "+f.getName());
 					} else if (f.isDirectory()) {
 						root = f;
 					}
