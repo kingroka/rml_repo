@@ -31,6 +31,7 @@ public class If extends Command {
 				condition = oldCond;
 				super.execute();
 				bool = false;
+
 			}
 		} catch (ScriptException e) {
 			// TODO Auto-generated catch block

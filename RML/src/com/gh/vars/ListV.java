@@ -3,7 +3,7 @@ package com.gh.vars;
 import java.util.ArrayList;
 
 public class ListV extends Variable {
-	String type;
+	public String type;
 	@SuppressWarnings("rawtypes")
 	public ArrayList items;
 	public ListV(String name, String type) {
@@ -12,7 +12,7 @@ public class ListV extends Variable {
 		if(type.trim().toLowerCase().equals("string")){
 			items = new ArrayList<String>();
 		}
-		if(type.trim().toLowerCase().equals("int")){
+		if(type.trim().toLowerCase().equals("double")){
 			items = new ArrayList<Double>();
 		}
 		if(type.trim().toLowerCase().equals("boolean")){

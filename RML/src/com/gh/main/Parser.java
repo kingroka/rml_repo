@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.gh.cmds.ArrayItemCmd;
 import com.gh.cmds.Bool;
 import com.gh.cmds.DoubleCmd;
 import com.gh.cmds.ExeFunc;
@@ -277,6 +278,9 @@ public class Parser {
 		}
 		if (temp.getCall().equals("if")) {
 			cmd = new If(script, (String) temp.getAttribute("cond").getValue());
+		}
+		if (temp.getCall().equals("ar")) {
+			cmd = new ArrayItemCmd((String) temp.getAttribute("list").getValue(),(String) temp.getAttribute("value").getValue(), script);
 		}
 
 	}
