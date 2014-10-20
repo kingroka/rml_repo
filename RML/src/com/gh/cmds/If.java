@@ -15,9 +15,11 @@ public class If extends Command {
 	ScriptEngineManager factory = new ScriptEngineManager();
 	ScriptEngine engine = factory.getEngineByName("JavaScript");
 	Script script;
-
+	String oldCond;
 	public If(Script script, String cond) {
 		condition = cond;
+		oldCond = cond;
+		
 		this.script = script;
 	}
 
@@ -26,16 +28,15 @@ public class If extends Command {
 		try {
 			Boolean bool = (Boolean) engine.eval(condition);
 			if (bool) {
+				condition = oldCond;
 				super.execute();
-				for (int i = 0; i < cmds.size(); i++) {
-					cmds.get(i).execute();
-					
-				}
+				bool = false;
 			}
 		} catch (ScriptException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 
 	public void convertToJavaScript() {
