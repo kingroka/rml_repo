@@ -9,20 +9,27 @@ Within this repository is the early workings of the java library that will parse
 ##Example Code
 ```
 <rml class="Main">
-//Functions with a '$' in front of their name will be executed on runtime
 	<func name="$main">
-		<double name="index" value="500"/>
+		<list name="myList" type="double"/>
+			<ar list="myList" value="1.56"/>
+			<ar list="myList" value="2.22"/>
+			<ar list="myList" value="3.78"/>
+			<ar list="myList" value="4.52"/>
+			
+		<double name="index" value="0"/>
 		<string name="line" value="Condition is true"/>
 		<boolean name="bool" value="false"/>	
 		<@var name="bool" set="true" />	
 		<@func name="test"/>
 	</func>
-	
-	<func name="test">	
-		<if cond="bool">
+	<func name="test">
+	//Recusrion!!!!
+		<if cond="index < 4" >
 			<print>
-				<@var name="line"/>
-			</print>
+				<@var name="myList[index]"/>	
+			</print>	
+			<@var name="index" set="++"/>
+			<@func name="test"/>
 		</if>
 	</func>
 </rml>
