@@ -27,12 +27,12 @@ public class Command {
 
 	public void execute() {
 		runChildren();
-		
 	}
 
 	public void runChildren() {
 		for (int i = 0; i < children.size(); i++) {
 			children.get(i).execute();
+			//System.out.println(children.get(i).key.contains);
 		}
 
 	}
@@ -63,8 +63,9 @@ public class Command {
 	}
 
 	public void setContains(String contains) {
-		str.append(contains);
-		this.key.setContains(str.toString().trim());
+		
+		key.contains= key.contains+"\n"+contains;
+
 	}
 
 	public String getCall() {

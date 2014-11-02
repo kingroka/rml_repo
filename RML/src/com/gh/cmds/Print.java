@@ -11,8 +11,7 @@ public class Print extends Command {
 	public void execute(){
 		super.execute();
 		if (getContains() != null ) {
-			
-			//System.out.println(getParent().getContains().trim());
+			System.out.println(getContains().trim());
 		}
 	}
 }

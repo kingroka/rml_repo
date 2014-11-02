@@ -89,7 +89,6 @@ public class Parser {
 
 	public void log(Object obj) {
 		System.out.println(this.getClass() + ": " + obj);
-
 	}
 
 	/**
@@ -203,6 +202,12 @@ public class Parser {
 							}
 
 						}
+					} else {
+						if (line.trim().length() >0) {
+							if (parent != null) {
+								parent.setContains(line.trim());
+							}
+						}
 					}
 				}
 			}
@@ -280,7 +285,9 @@ public class Parser {
 			cmd = new If(script, (String) temp.getAttribute("cond").getValue());
 		}
 		if (temp.getCall().equals("ar")) {
-			cmd = new ArrayItemCmd((String) temp.getAttribute("list").getValue(),(String) temp.getAttribute("value").getValue(), script);
+			cmd = new ArrayItemCmd((String) temp.getAttribute("list")
+					.getValue(),
+					(String) temp.getAttribute("value").getValue(), script);
 		}
 
 	}

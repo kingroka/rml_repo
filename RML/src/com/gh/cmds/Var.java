@@ -30,6 +30,7 @@ public class Var extends Command {
 		// System.out.println("executing: " + this);
 		String[] list = name.split("\\[");
 		if (getParent().getCall().equals("print")) {
+			//if printing
 			if (!(script.getVariableByName(list[0]) instanceof ListV)) {
 				System.out.println((String) script.getVariableByName(this.name)
 						.getValue().toString());
@@ -42,6 +43,7 @@ public class Var extends Command {
 				}
 			}
 		} else {
+			//if setting variable
 			String name = this.name;
 			String[] list1 = name.split("\\[");
 			String value = val;
@@ -55,7 +57,15 @@ public class Var extends Command {
 						item.setValue(value);
 					}
 					if (item.type.trim().toLowerCase().equals("double")) {
-						item.setValue(Double.parseDouble(value));
+						value = convertToJavaScript(value);
+						try {
+							item.setValue((double) engine.eval(value));
+							System.out.println(script.getVariableByName(list1[0]).getValue());
+							 script.variables.set(script.variables.indexOf(script.getVariableByName(list1[0])), item);
+						} catch (ScriptException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					if (item.type.trim().toLowerCase().equals("boolean")) {
 						item.setValue(Boolean.parseBoolean(value));
