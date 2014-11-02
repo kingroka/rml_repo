@@ -99,10 +99,7 @@ public class Parser {
 
 	}
 
-	public static void main(String[] args) {
-		FileHandle.init(new Parser(), "C:\\Users\\Justin\\Documents\\Projects");
-		FileHandle.run();
-	}
+	
 
 	public ArrayList<Command> parents = new ArrayList<Command>();
 	public Command cmd = null;
